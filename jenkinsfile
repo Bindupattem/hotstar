@@ -40,9 +40,9 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-                sh 'docker login -u sunithriyansh -p satya'
-                sh 'docker tag imag1:latest sunithriyansh/satya:latest'
-                sh 'docker push sunithriyansh/satya:latest'
+                sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                sh 'docker tag imag1:latest $DOCKER_USER/$IMAGE_NAME:latest'
+                sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
             }
         }
 

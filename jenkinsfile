@@ -28,4 +28,17 @@ maven'mymave'
 		}
 		}
     }
+        stage('Push to DockerHub') {
+        steps {
+            withCredentials([usernamePassword(
+            credentialsId: 'dockerhub',
+            usernameVariable: 'USER',
+             passwordVariable: 'PASS' )])
+    {
+
+       sh 'docker login -u $USER -p $PASS'
+       sh 'docker tag myapp $USER/myapp:latest'
+       sh 'docker push $USER/myapp:latest'
+     }
+   }
 }

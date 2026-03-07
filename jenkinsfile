@@ -32,13 +32,13 @@ maven'mymave'
         steps {
             withCredentials([usernamePassword(
             credentialsId: 'dockerhub',
-            usernameVariable: 'USER',
-             passwordVariable: 'PASS' )])
+            usernameVariable: 'sunithriyansh',
+             passwordVariable: 'Sunitha@565' )])
     {
 
        sh 'docker login -u $USER -p $PASS'
-       sh 'docker tag myapp $USER/myapp:latest'
-       sh 'docker push $USER/myapp:latest'
+       sh 'docker tag myapp $USER/satya'
+       sh 'docker push $USER/satya'
      }
    }
 }

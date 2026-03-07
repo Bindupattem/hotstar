@@ -23,7 +23,8 @@ maven'mymave'
 		stage('docker_run'){
 		
 		steps{
-		     sh 'docker run -itd --name cont1 -p 8085:8080 imag1'
+		    sh 'docker rm cont1 -f || true'   
+           sh 'docker run -itd --name cont1 -p 8085:8080 imag1'
 		}
 		}
     }

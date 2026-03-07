@@ -17,13 +17,13 @@ maven'mymave'
 		stage('docker_build'){
 		
 		steps{
-		     sh 'sudo docker build -t imag1 .'
+		     sh 'docker build -t imag1 .'
 		}
 		}
 		stage('docker_run'){
 		
 		steps{
-		     sh 'sudo docker run -itd --name cont1 -p 8085:8080 imag1'
+		     sh 'docker run -itd --name cont1 -p 8085:8080 imag1'
 		}
 		}
     }

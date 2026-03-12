@@ -34,7 +34,7 @@ pipeline {
         stage('Docker Run') {
             steps {
                 sh 'docker rm -f cont1 || true'
-                sh 'docker run -d --name cont1 -p 8090:80 imag1'
+                sh 'docker run -d --name cont1 -p 8090:8080 imag1'
             }
         }
 

@@ -17,7 +17,7 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 COPY --from=artifact /app/app.war /usr/local/tomcat/webapps/Root.WAR
 
 
-EXPOSE 8090
+EXPOSE 80
 
 
 CMD ["catalina.sh", "run"]

@@ -6,16 +6,16 @@ pipeline {
     }
 
     environment {
-        DOCKER_USER = 'sunithriyansh'
-        DOCKER_PASS = 'Sunitha@565'
-        IMAGE_NAME  = 'satya'
+        DOCKER_USER = 'bindusravya'
+        DOCKER_PASS = 'Sravya@901'
+        IMAGE_NAME  = 'task4'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/ramadevipanthagadi/hotstar_project.git'
+                git branch: 'master', url: 'https://github.com/Bindupattem/hotstar.git'
             }
         }
 

@@ -2,13 +2,11 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.9.4' // replace with your exact Maven tool name
+        maven 'my maven' // exact Maven tool name from Global Tool Configuration
     }
 
     environment {
-        DOCKER_USER = credentials('docker-hub-cred-id').username
-        DOCKER_PASS = credentials('docker-hub-cred-id').password
-        IMAGE_NAME  = 'task4'
+        IMAGE_NAME = 'task4' // only literals allowed here
     }
 
     stages {
@@ -39,9 +37,11 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-                sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                sh 'docker tag myimg2:latest $DOCKER_USER/$IMAGE_NAME:latest'
-                sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-cred-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker tag myimg2:latest $DOCKER_USER/$IMAGE_NAME:latest'
+                    sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
+                }
             }
         }
     }

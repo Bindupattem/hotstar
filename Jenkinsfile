@@ -31,7 +31,7 @@ pipeline {
         stage('Docker Run') {
             steps {
                 sh 'docker rm -f cont1 || echo "container not found"'
-                sh 'docker run -d --name cont1 -p 8076:80 myimg2'
+                sh 'docker run -d --name cont1 -p 8076:8080 myimg2'
             }
         }
 

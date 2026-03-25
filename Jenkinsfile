@@ -41,10 +41,9 @@ pipeline {
         stage('Push to DockerHub') {
             steps {
                 sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-                sh 'docker tag imag1:latest $DOCKER_USER/$IMAGE_NAME:latest'
+                sh 'docker tag myimg2:latest $DOCKER_USER/$IMAGE_NAME:latest'
                 sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
             }
         }
-
     }
 }

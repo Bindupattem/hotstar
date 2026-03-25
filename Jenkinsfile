@@ -2,17 +2,16 @@ pipeline {
     agent any
 
     tools {
-        maven 'mymave'
+        maven 'Maven 3.9.4' // replace with your exact Maven tool name
     }
 
     environment {
-        DOCKER_USER = 'bindusravya'
-        DOCKER_PASS = 'Sravya@901'
+        DOCKER_USER = credentials('docker-hub-cred-id').username
+        DOCKER_PASS = credentials('docker-hub-cred-id').password
         IMAGE_NAME  = 'task4'
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: 'master', url: 'https://github.com/Bindupattem/hotstar.git'
@@ -33,14 +32,14 @@ pipeline {
 
         stage('Docker Run') {
             steps {
-                sh 'docker rm -f cont1 || true'
+                sh 'docker rm -f cont1 || echo "container not found"'
                 sh 'docker run -d --name cont1 -p 8076:80 myimg2'
             }
         }
 
         stage('Push to DockerHub') {
             steps {
-                sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                 sh 'docker tag myimg2:latest $DOCKER_USER/$IMAGE_NAME:latest'
                 sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
             }

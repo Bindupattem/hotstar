@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'task4'
+        SONARQUBE_ENV = 'SonarQube'
     }
 
     stages {
@@ -26,12 +27,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    mvn clean verify sonar:sonar \
-                    -Dsonar.projectKey=myapp \
-                    -Dsonar.host.url=http://13.127.242.127:8080 \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
-                    '''
+                    sh 'mvn clean sonar:sonar'
                 }
             }
         }

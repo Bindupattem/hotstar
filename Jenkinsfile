@@ -1,12 +1,15 @@
-pipeline {
+
+         
+                pipeline {
     agent any
 
     tools {
         maven 'my maven' // exact Maven tool name from Global Tool Configuration
+        jdk 'jdk17'      // JDK tool for Maven build
     }
 
     environment {
-        IMAGE_NAME = 'task4' // only literals allowed here
+        IMAGE_NAME = 'task4'
     }
 
     stages {
@@ -43,11 +46,14 @@ pipeline {
                     sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
                 }
             }
-            stage('nexus') {
-                steps {
-                    withMaven(jdk: 'jdk17', maven: 'maven3', traceability: true) {
-                    sh 'mvn deploy'
-}
         }
-    }
-}
+
+        stage('Deploy to Nexus') {
+            steps {
+                withMaven(jdk: 'jdk17', maven: 'my maven', traceability: true) {
+                    sh 'mvn deploy'
+                }
+            }
+        }
+    } // end of stages
+} // end of pipeline

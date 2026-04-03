@@ -43,6 +43,11 @@ pipeline {
                     sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
                 }
             }
+            stage('nexus') {
+                steps {
+                    withMaven(jdk: 'jdk17', maven: 'maven3', traceability: true) {
+                    sh 'mvn deploy'
+}
         }
     }
 }

@@ -1,15 +1,12 @@
-
-         
-                pipeline {
+pipeline {
     agent any
 
     tools {
         maven 'my maven' // exact Maven tool name from Global Tool Configuration
-        jdk 'jdk17'      // JDK tool for Maven build
     }
 
     environment {
-        IMAGE_NAME = 'task4'
+        IMAGE_NAME = 'task4' // only literals allowed here
     }
 
     stages {
@@ -47,13 +44,11 @@
                 }
             }
         }
+    }
+}
+         
+               
 
-        stage('Deploy to Nexus') {
-            steps {
-                withMaven(jdk: 'jdk17', maven: 'my maven', traceability: true) {
-                    sh 'mvn deploy'
-                }
-            }
-        }
-    } // end of stages
-} // end of pipeline
+        
+
+       

@@ -36,18 +36,26 @@ pipeline {
         }
 
         stage('Push to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-cred-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh 'docker tag myimg2:latest $DOCKER_USER/$IMAGE_NAME:latest'
-                    sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
-                }
-            }
-            stage('deploy to nexus') {
-            steps {
-                withMaven(globalMavenSettingsConfig: 'settings.xml', jdk: 'jdk17', maven: 'my maven', traceability: true) {
-                         sh 'mvn deploy'
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-cred-id', 
+                                         usernameVariable: 'DOCKER_USER', 
+                                         passwordVariable: 'DOCKER_PASS')]) {
+            sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+            sh 'docker tag myimg2:latest $DOCKER_USER/$IMAGE_NAME:latest'
+            sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
+        }
+    }
 }
+
+stage('Deploy to Nexus') {
+    steps {
+        withMaven(
+            globalMavenSettingsConfig: 'settings.xml', // Jenkins-managed Maven settings
+            jdk: 'jdk17',
+            maven: 'my maven',
+            traceability: true
+        ) {
+            sh 'mvn deploy'
         }
     }
 }

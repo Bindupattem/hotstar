@@ -2,13 +2,14 @@ pipeline {
     agent any
 
     tools {
-        maven 'my maven' // Maven tool configured in Jenkins
+        maven 'my maven' // Maven tool from Jenkins configuration
         jdk 'jdk17'      // JDK for Maven build
     }
 
     environment {
-        SONAR_PROJECT_KEY = 'myapp'        // SonarQube project key
-        SONAR_PROJECT_NAME = 'myapp'       // SonarQube project name
+        IMAGE_NAME = 'task4'        // Docker image name
+        SONAR_PROJECT_KEY = 'myapp' // SonarQube project key
+        SONAR_PROJECT_NAME = 'myapp'
     }
 
     stages {
@@ -26,14 +27,12 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                // 'MySonarQube' is the Jenkins SonarQube server name
+                // 'MySonarQube' = Jenkins SonarQube server configuration name
                 withSonarQubeEnv('MySonarQube') {
                     sh """
                        mvn sonar:sonar \
                        -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
-                       -Dsonar.projectName=${env.SONAR_PROJECT_NAME} \
-                       -Dsonar.host.url=$SONAR_HOST_URL \
-                       -Dsonar.login=$SONAR_AUTH_TOKEN
+                       -Dsonar.projectName=${env.SONAR_PROJECT_NAME}
                     """
                 }
             }
@@ -41,11 +40,49 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-                // Wait for SonarQube quality gate result
+                // Wait for SonarQube Quality Gate result
                 timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
         }
-    }
-}
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t myimg2 .'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                sh 'docker rm -f cont1 || echo "container not found"'
+                sh 'docker run -d --name cont1 -p 8076:8080 myimg2'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-cred-id', 
+                                                 usernameVariable: 'DOCKER_USER', 
+                                                 passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker tag myimg2:latest $DOCKER_USER/$IMAGE_NAME:latest'
+                    sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                withMaven(
+                    globalMavenSettingsConfig: 'settings.xml', // Jenkins-managed Maven settings
+                    jdk: 'jdk17',
+                    maven: 'my maven',
+                    traceability: true
+                ) {
+                    sh 'mvn deploy'
+                }
+            }
+        }
+    } // end of stages
+} // end of pipeline

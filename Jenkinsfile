@@ -24,17 +24,15 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-    steps {
-        withSonarQubeEnv('SonarQube') {
-            sh '''
-            mvn clean verify sonar:sonar \
-            -Dsonar.projectKey=myapp \
-            -Dsonar.host.url=http://13.127.242.127:8080 \
-            -Dsonar.login=$SONAR_AUTH_TOKEN
-            '''
-        }
-    }
-}
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    mvn clean verify sonar:sonar \
+                    -Dsonar.projectKey=myapp \
+                    -Dsonar.host.url=http://13.127.242.127:8080 \
+                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                    '''
+                }
             }
         }
 

@@ -7,9 +7,9 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'task4'        // Docker image name
-        SONAR_PROJECT_KEY = 'myapp' // SonarQube project key
-        SONAR_PROJECT_NAME = 'myapp'
+        IMAGE_NAME = 'hotstarprojectt'        // Docker image name
+        SONAR_PROJECT_KEY = 'sq' // SonarQube project key
+        SONAR_PROJECT_NAME = 'sq'
     }
 
     stages {
